@@ -15,6 +15,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{const s=localStorage.getItem('theme');const d=matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s|| (d?'dark':'light'));}catch{}`
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", saved);
+    `,
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>

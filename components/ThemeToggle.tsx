@@ -6,21 +6,35 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") as "light" | "dark" | null;
-    if (current) setTheme(current);
+    // get saved theme OR default to light
+    const stored = (localStorage.getItem("theme") as "light" | "dark") || "light";
+
+    // apply immediately
+    document.documentElement.setAttribute("data-theme", stored);
+    setTheme(stored);
   }, []);
 
-  const toggle = () => {
+  const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("theme", next); } catch {}
+    localStorage.setItem("theme", next);
     setTheme(next);
   };
 
   return (
-    <button className="btn btn-ghost" onClick={toggle} aria-label="Toggle theme">
-      {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-      <span className="hidden sm:inline">{theme === "light" ? "Dark" : "Light"}</span>
+    <button 
+      className="btn btn-ghost"
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+    >
+      {theme === "light" ? (
+        <Moon className="w-5 h-5" />
+      ) : (
+        <Sun className="w-5 h-5" />
+      )}
+      <span className="hidden sm:inline">
+        {theme === "light" ? "Dark" : "Light"}
+      </span>
     </button>
   );
 }
