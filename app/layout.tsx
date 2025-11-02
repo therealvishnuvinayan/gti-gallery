@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "GTI Gallery",
-  description: "Google-like elegant product explorer",
+  description: "A premium digital showcase for GTI cigarette brands and packaging, designed for elegant product presentation and seamless visual exploration.",
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
