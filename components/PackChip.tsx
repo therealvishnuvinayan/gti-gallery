@@ -1,17 +1,26 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { PackType } from "@/lib/data";
 
-export function PackChip({ pack, onClick }: { pack: PackType; onClick: () => void }) {
+export function PackChip({
+  pack,
+  onClick,
+}: {
+  pack: PackType;
+  onClick: () => void;
+}) {
   return (
-    <motion.button
-      whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.98 }}
-      className="btn btn-primary"
+    <button
+      type="button"
       onClick={onClick}
+      aria-label={`Select ${pack.name}`}
+      className="
+        btn btn-primary
+        transform-gpu transition-transform duration-150 ease-out
+        hover:-translate-y-0.5 active:scale-95
+      "
     >
       {pack.name}
-    </motion.button>
+    </button>
   );
 }

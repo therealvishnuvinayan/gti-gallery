@@ -1,21 +1,43 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { BrandImage } from "@/lib/data";
 
-export function ImageTile({ img, onClick }: { img: BrandImage; onClick: () => void }) {
+type Props = {
+  img: BrandImage;
+  onClick: () => void;
+};
+
+export function ImageTile({ img, onClick }: Props) {
   return (
-    <motion.button
-      className="group aspect-box"
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      onClick={onClick}
+    <div
+      className="
+        aspect-box relative group
+        transform-gpu transition-transform duration-150 ease-out
+        hover:scale-[1.01] active:scale-[0.98]
+      "
     >
-      <div className="aspect-[3/4] relative">
-        <Image src={img.src} alt={img.alt} fill sizes="(min-width: 1024px) 300px, 40vw" className="object-cover" />
+      {/* Click target */}
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={img.alt}
+        className="absolute inset-0 z-10"
+      />
+
+      {/* Image */}
+      <div className="aspect-[3/4] relative pointer-events-none">
+        <Image
+          src={img.src}
+          alt={img.alt}
+          fill
+          sizes="(min-width: 1024px) 300px, 40vw"
+          className="object-cover"
+        />
       </div>
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-black/10" />
-    </motion.button>
+
+      {/* Hover veil */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-black/10 pointer-events-none" />
+    </div>
   );
 }
