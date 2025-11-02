@@ -27,13 +27,7 @@ export function ImageTile({ img, onClick }: Props) {
 
       {/* Image */}
       <div className="aspect-[3/4] relative pointer-events-none">
-        <Image
-          src={img.src}
-          alt={img.alt}
-          fill
-          sizes="(min-width: 1024px) 300px, 40vw"
-          className="object-cover"
-        />
+        <Image src={img.src} alt={img.alt} fill sizes="(min-width: 1280px) 220px, (min-width: 768px) 200px, 45vw" className="object-cover" />
       </div>
 
       {/* Hover veil */}

@@ -10,7 +10,6 @@ import { CarouselModal } from "@/components/CarouselModal";
 import { ChevronLeft, Layers } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
-
 type View = "brands" | "packs" | "images";
 
 export default function Page() {
@@ -26,6 +25,7 @@ export default function Page() {
     if (view === "packs") { setView("brands"); setBrand(null); return; }
   };
 
+  // keep logo in sync with theme (default is light)
   useEffect(() => {
     const updateLogo = () => {
       const theme = document.documentElement.getAttribute("data-theme");
@@ -35,11 +35,9 @@ export default function Page() {
           : "/logos/gulbahar-logodark.svg"
       );
     };
-
     updateLogo();
     const observer = new MutationObserver(updateLogo);
     observer.observe(document.documentElement, { attributes: true });
-
     return () => observer.disconnect();
   }, []);
 
@@ -55,9 +53,6 @@ export default function Page() {
                 <span className="hidden sm:inline">Back</span>
               </button>
             )}
-
-            {/* Gulbahar logo replaces text */}
-            {/* logo */}
             <div className="pl-1">
               <Image
                 src={themeLogo}
@@ -86,8 +81,7 @@ export default function Page() {
       <section className="container-pro py-10 md:py-14">
         {view === "brands" && (
           <div>
-            {/* Google-like hero: centered, airy headline + subtext */}
-            <div className="mb-8 md:mb-12 text-center">
+            <div className="mb-8 md:mb-10 text-center">
               <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
                 Choose your brand
               </h1>
@@ -96,16 +90,13 @@ export default function Page() {
               </p>
             </div>
 
-            {/* Card grid */}
-            <div className="grid-auto">
+            {/* Vertical list */}
+            <div className="flex flex-col gap-4 w-full max-w-sm mx-auto pt-4">
               {BRANDS.map((b) => (
                 <BrandCard
                   key={b.id}
                   brand={b}
-                  onClick={() => {
-                    setBrand(b);
-                    setView("packs");
-                  }}
+                  onClick={() => { setBrand(b); setView("packs"); }}
                 />
               ))}
             </div>
@@ -113,24 +104,30 @@ export default function Page() {
         )}
 
         {view === "packs" && brand && (
-          <div>
-            <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
-                Choose pack type
+          <div className="flex flex-col items-center">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                {brand.name}
               </h2>
-              <p className="text-[var(--muted)] mt-2">{brand.name}</p>
+              <p className="text-[var(--muted)] mt-2">
+                Choose your Pack Type
+              </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            {/* Card style list like brand selection */}
+            <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
               {brand.packs.map((p) => (
-                <PackChip
+                <button
                   key={p.id}
-                  pack={p}
-                  onClick={() => {
-                    setPack(p);
-                    setView("images");
-                  }}
-                />
+                  onClick={() => { setPack(p); setView("images"); }}
+                  className="
+            card p-5 text-left flex items-center justify-between
+            transform-gpu transition hover:-translate-y-0.5 hover:shadow-lg
+          "
+                >
+                  <span className="text-lg font-medium">{p.name}</span>
+                  <span className="text-[var(--muted)]">{">"}</span>
+                </button>
               ))}
             </div>
           </div>
@@ -138,22 +135,19 @@ export default function Page() {
 
         {view === "images" && brand && pack && (
           <div>
-            <div className="mb-8">
+            <div className="mb-6">
               <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
                 {pack.name}
               </h2>
               <p className="text-[var(--muted)] mt-2">{brand.name}</p>
             </div>
 
-            <div className="grid-auto">
+            <div className="grid-images">
               {pack.images.map((img, idx) => (
                 <ImageTile
                   key={img.id}
                   img={img}
-                  onClick={() => {
-                    setSelectedIndex(idx);
-                    setIsOpen(true);
-                  }}
+                  onClick={() => { setSelectedIndex(idx); setIsOpen(true); }}
                 />
               ))}
             </div>

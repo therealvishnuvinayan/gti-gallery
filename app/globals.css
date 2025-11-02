@@ -12,7 +12,7 @@
   --ring: #e6eaf2;
   --text: #0b1220;
   --muted: #5b6478;
-  --dot: rgba(0,0,0,.28);
+  --dot: rgba(0, 0, 0, .28);
 }
 
 [data-theme="dark"] {
@@ -22,7 +22,7 @@
   --ring: rgba(76, 107, 255, 0.18);
   --text: #e9eefc;
   --muted: #a6b0cf;
-  --dot: rgba(255,255,255,.38);
+  --dot: rgba(255, 255, 255, .38);
 }
 
 /* ─────────────────────────────────────────────
@@ -55,8 +55,7 @@ body {
     var(--bg);
 }
 
-
-/* site container — wider like Google learn */
+/* site container */
 .container-pro {
   @apply mx-auto px-6;
   max-width: 1280px;
@@ -69,38 +68,26 @@ body {
   @apply bg-[var(--panel)] rounded-[24px] border border-[var(--border)] overflow-hidden transition;
   box-shadow:
     0 1px 0 var(--ring),
-    0 6px 20px rgba(2, 6, 23, 0.04),
-    0 12px 32px rgba(2, 6, 23, 0.06);
+    0 8px 18px rgba(2, 6, 23, 0.05);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 1px 0 var(--ring),
-    0 10px 26px rgba(2, 6, 23, 0.08);
 }
 
-/* ─────────────────────────────────────────────
-   Header / AppBar
-───────────────────────────────────────────────*/
+/* AppBar */
 .appbar {
   @apply sticky top-0 z-40 backdrop-blur border-b border-[var(--border)];
   background: rgba(255, 255, 255, 0.75);
-  box-shadow:
-    0 0.6px 0 var(--ring),
-    0 12px 32px rgba(2, 6, 23, 0.06);
+  box-shadow: 0 0.6px 0 var(--ring), 0 12px 32px rgba(2, 6, 23, 0.06);
 }
 
 [data-theme="dark"] .appbar {
   background: rgba(0, 0, 0, 0.55);
-  box-shadow:
-    0 0.6px 0 var(--ring),
-    0 12px 32px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0.6px 0 var(--ring), 0 12px 32px rgba(0, 0, 0, 0.7);
 }
 
-/* ─────────────────────────────────────────────
-   Buttons
-───────────────────────────────────────────────*/
+/* Buttons */
 .btn {
   @apply inline-flex items-center gap-2 rounded-xl border border-[var(--border)] px-4 py-2 transition text-sm font-medium cursor-pointer;
   box-shadow: 0 1px 0 var(--ring);
@@ -118,9 +105,7 @@ body {
   @apply hover:bg-white/10 text-[var(--text)];
 }
 
-/* ─────────────────────────────────────────────
-   Badges
-───────────────────────────────────────────────*/
+/* Badges */
 .badge {
   @apply rounded-lg px-3 py-1.5 text-sm border border-[var(--border)] font-medium;
   background: rgba(240, 242, 248, 0.9);
@@ -130,18 +115,14 @@ body {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* ─────────────────────────────────────────────
-   Grid
-───────────────────────────────────────────────*/
+/* Responsive auto grid for images */
 .grid-auto {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 22px;
 }
 
-/* ─────────────────────────────────────────────
-   Thumbnails
-───────────────────────────────────────────────*/
+/* Thumbnails */
 .aspect-box {
   @apply relative overflow-hidden rounded-2xl border border-[var(--border)];
   background: var(--panel);
@@ -151,19 +132,44 @@ body {
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* ─────────────────────────────────────────────
-   Logo glow (subtle)
-───────────────────────────────────────────────*/
-.logo-shadow {
-  filter: drop-shadow(0 8px 18px rgba(76, 107, 255, 0.15));
-}
-
-/* lighter static shadow to avoid heavy repaints */
-.card {
-  box-shadow: 0 1px 0 var(--ring), 0 8px 18px rgba(2, 6, 23, 0.05);
-}
-
-/* optional: remove drop-shadow from logos for smoother hover */
+/* Logo drop-shadow (kept subtle) */
 .logo-shadow {
   filter: none;
 }
+
+/* thin horizontal scrollbar for thumbnail rail */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 999px;
+}
+[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25);
+}
+
+/* Images grid: smaller tiles */
+.grid-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+@media (min-width: 768px) {
+  .grid-images {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-images {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+  }
+}
+
