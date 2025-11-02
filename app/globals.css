@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light theme default */
+:root {
+  --bg: #f7f9fc;
+  --panel: #ffffff;
+  --border: rgba(2,6,23,0.08);
+  --ring: #e6eaf2;
+  --text: #0b1220;
+  --muted: #5b6478;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg: #0b0d12;
+  --panel: #0f131b;
+  --border: rgba(255,255,255,0.08);
+  --ring: rgba(76,107,255,0.18);
+  --text: #e9eefc;
+  --muted: #a6b0cf;
+}
+
+html, body, #__next { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+}
+
+/* Layout helpers */
+.container-pro { @apply max-w-6xl mx-auto px-5; }
+
+/* Surfaces */
+.card {
+  @apply bg-[var(--panel)] rounded-3xl border border-[var(--border)];
+  box-shadow: 0 1px 0 var(--ring), 0 8px 24px rgba(2,6,23,0.06);
+}
+
+.appbar {
+  @apply sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-[var(--border)];
+}
+[data-theme="dark"] .appbar { @apply bg-black/40; }
+
+/* Controls */
+.btn { @apply inline-flex items-center gap-2 rounded-xl border border-[var(--border)] px-4 py-2 transition; box-shadow: 0 1px 0 var(--ring); }
+.btn-primary { @apply bg-brand-600 hover:bg-brand-700 text-white; }
+.btn-ghost { @apply hover:bg-black/5; }
+[data-theme="dark"] .btn-ghost { @apply hover:bg-white/5; }
+
+.badge { @apply rounded-lg px-3 py-1.5 text-sm text-[var(--muted)] border border-[var(--border)]; background: #f2f5fb; }
+[data-theme="dark"] .badge { background: rgba(255,255,255,0.05); }
+
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+.aspect-box { @apply relative overflow-hidden rounded-2xl border border-[var(--border)] bg-white; }
+[data-theme="dark"] .aspect-box { @apply bg-white/5; }
+
+.logo-shadow { filter: drop-shadow(0 6px 18px rgba(76,107,255,0.18)); }
