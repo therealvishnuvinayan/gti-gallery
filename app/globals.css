@@ -173,3 +173,156 @@ body {
   }
 }
 
+/* ── Homepage split layout ───────────────────────────────────── */
+.home-split{
+  display:grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items:center;
+  gap:3rem;
+  min-height:60vh;
+}
+
+.home-divider{
+  width:1px;
+  height:70%;
+  background: var(--border);
+  justify-self:center;
+}
+
+.home-slogan{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+}
+.home-slogan-text{
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.95;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.home-slogan-sub{
+  color: var(--muted);
+  margin-top: 1rem;
+}
+
+/* Tiles grid */
+.home-tiles{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 2rem;
+  justify-items:center;
+}
+
+/* Pure black boxes with white text */
+.brand-tile{
+  width: 220px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #111;           /* solid black-ish */
+  border: 1px solid #111;     /* no glow, no card */
+  border-radius: 0;           /* square corners as in sketch */
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition: transform .12s ease-out, opacity .12s ease-out;
+}
+.brand-tile:hover{ transform: translateY(-2px); }
+.brand-tile:active{ transform: translateY(0); }
+
+.brand-tile__label{
+  color:#fff;
+  font-weight: 700;
+  letter-spacing: .06em;
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+}
+
+/* Responsive: stack and keep divider full-width on mobile */
+@media (max-width: 768px){
+  .home-split{
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    min-height: auto;
+  }
+  .home-divider{ display:none; }
+  .home-tiles{ grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .brand-tile{ width: 100%; }
+}
+
+/* ── Packs view ───────────────────────────────────────────── */
+.packs-wrap{
+  display: grid;
+  gap: 2.5rem;
+  justify-items: center;
+}
+
+.packs-head{
+  text-align: center;
+  margin-top: .5rem;
+}
+
+.packs-title{
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+/* 4×2 grid like the sketch */
+.packs-grid{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 2.25rem;
+}
+
+/* black square tiles with white text */
+.pack-tile{
+  width: 220px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #111;
+  border: 1px solid #111;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .12s ease-out;
+}
+.pack-tile:hover{ transform: translateY(-2px); }
+.pack-tile:active{ transform: translateY(0); }
+
+.pack-tile__label{
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  letter-spacing: .06em;
+}
+
+/* responsive: 2 columns on tablet/phone */
+@media (max-width: 1024px){
+  .packs-grid{ grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+}
+
+/* denser images grid */
+.grid-images--dense{
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+@media (min-width: 768px){
+  .grid-images--dense{
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+  }
+}
+@media (min-width: 1024px){
+  .grid-images--dense{
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+}
+
+/* slightly smaller radius for image tiles */
+.aspect-box{ border-radius: 12px; } /* was 1.5rem via rounded-2xl */
+
+
+
+

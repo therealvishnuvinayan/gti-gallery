@@ -4,7 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { BrandImage } from "@/lib/data";
+import type { BrandImage } from "@/lib/data";
 
 type Props = {
   title: string;
@@ -72,21 +72,22 @@ export function CarouselModal({
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
-        {/* Backdrop */}
+        {/* very light backdrop so page behind still feels present */}
         <Transition.Child
           as={Fragment}
-          enter="transition-opacity ease-out duration-200"
+          enter="transition-opacity ease-out duration-150"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="transition-opacity ease-in duration-150"
+          leave="transition-opacity ease-in duration-100"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-[2px]" />
+          <div className="fixed inset-0 bg-black/10" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-6">
+        {/* FULL-SCREEN PANEL with 3-row grid: header | stage | thumbs */}
+        <div className="fixed inset-0">
+          <div className="flex min-h-full items-stretch justify-center">
             <Transition.Child
               as={Fragment}
               enter="transition ease-out duration-200 transform"
@@ -96,61 +97,75 @@ export function CarouselModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="card w-full max-w-6xl overflow-hidden">
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]">
-                  <Dialog.Title className="text-lg font-semibold">
+              <Dialog.Panel
+                className="
+                  w-full h-screen bg-[var(--panel)] 
+                  md:rounded-2xl md:m-4 shadow-lg overflow-hidden
+                  grid grid-rows-[auto,1fr,auto]
+                "
+              >
+                {/* HEADER (fixed height) */}
+                <div className="relative flex items-center justify-center px-5 py-3 border-b border-[var(--border)]">
+                  <Dialog.Title className="text-base font-semibold tracking-wide">
                     {title}
                   </Dialog.Title>
-                  <button className="btn btn-ghost" onClick={onClose} aria-label="Close">
+                  <button
+                    className="btn btn-ghost absolute right-3 top-2.5"
+                    onClick={onClose}
+                    aria-label="Close"
+                  >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                {/* Main stage */}
-                <div className="relative bg-black">
-                  <div className="relative aspect-[16/9]">
-                    {current ? (
-                      <Image
-                        src={current.src}
-                        alt={current.alt}
-                        fill
-                        sizes="100vw"
-                        className="object-contain select-none"
-                        priority
-                      />
-                    ) : (
-                      <div className="absolute inset-0 grid place-items-center text-white/60">
-                        No images
-                      </div>
-                    )}
-                  </div>
+                {/* STAGE (fills remaining height; no page scroll) */}
+                <div className="relative min-h-0">
+                  <div className="absolute inset-0 p-2 md:p-6 pb-6 md:pb-8">
+                    <div className="relative w-full h-full">
+                      {current ? (
+                        <Image
+                          src={current.src}
+                          alt={current.alt}
+                          fill
+                          sizes="100vw"
+                          className="object-contain select-none"
+                          priority
+                        />
+                      ) : (
+                        <div className="absolute inset-0 grid place-items-center text-[var(--muted)]">
+                          No images
+                        </div>
+                      )}
 
-                  {/* Nav arrows (visible on dark/light) */}
-                  <button
-                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/25 bg-white/10 text-white p-3 backdrop-blur-sm transition hover:bg-white/20 disabled:opacity-40"
-                    onClick={prev}
-                    disabled={!hasImages || len < 2}
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <button
-                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/25 bg-white/10 text-white p-3 backdrop-blur-sm transition hover:bg-white/20 disabled:opacity-40"
-                    onClick={next}
-                    disabled={!hasImages || len < 2}
-                    aria-label="Next image"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
+                      {/* arrows float over the image; no layout shift */}
+                      <button
+                        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 rounded-full border border-[var(--border)] bg-[var(--panel)] text-[var(--text)] p-3 shadow-sm transition hover:bg-black/5 disabled:opacity-40"
+                        onClick={prev}
+                        disabled={!hasImages || len < 2}
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button
+                        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 rounded-full border border-[var(--border)] bg-[var(--panel)] text-[var(--text)] p-3 shadow-sm transition hover:bg-black/5 disabled:opacity-40"
+                        onClick={next}
+                        disabled={!hasImages || len < 2}
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Thumbnail rail */}
+                {/* THUMB STRIP (fixed height, always visible; horizontal scroll if overflow) */}
                 {hasImages && (
                   <div className="border-t border-[var(--border)] bg-[var(--panel)]">
+                    {/* Thumbnail Rail */}
                     <div
                       ref={railRef}
-                      className="flex gap-3 px-4 py-4 overflow-x-auto scrollbar-thin"
+                      className="flex gap-4 px-4 py-3 overflow-x-auto scrollbar-thin"
+                      style={{ height: "120px" }}
                     >
                       {images.map((img, i) => {
                         const active = i === index;
@@ -159,46 +174,32 @@ export function CarouselModal({
                             key={img.id}
                             data-thumb-idx={i}
                             onClick={() => setIndex(i)}
-                            aria-current={active ? "true" : undefined}
-                            aria-label={`Open image ${i + 1}`}
                             className={[
-                              "group relative h-16 w-24 shrink-0 overflow-hidden rounded-lg",
-                              "border transition-all duration-200 ease-out",
+                              "relative shrink-0 overflow-hidden rounded-md",
+                              "h-[90px] w-[135px] md:h-[100px] md:w-[150px]",
                               active
-                                ? "border-transparent ring-2 ring-blue-500 ring-offset-2 ring-offset-[var(--panel)] shadow-lg scale-[1.06]"
-                                : "border-[var(--border)] hover:border-blue-300 hover:scale-[1.02]",
+                                ? "border-2 border-blue-500 ring-blue-500/20 ring-2"
+                                : "border border-[var(--border)] hover:scale-[1.03]"
                             ].join(" ")}
-                            style={{ transformOrigin: "center" }}
                           >
                             <Image
                               src={img.src}
                               alt={img.alt}
                               fill
-                              sizes="120px"
-                              className={[
-                                "object-cover transition-all duration-200 ease-out",
-                                active ? "saturate-100 brightness-100" : "opacity-85 saturate-90",
-                              ].join(" ")}
-                              priority={active}
-                            />
-
-                            {/* subtle dark veil on inactive thumbs */}
-                            <div
-                              className={[
-                                "pointer-events-none absolute inset-0 transition-opacity duration-200",
-                                active ? "opacity-0" : "opacity-15 group-hover:opacity-0",
-                              ].join(" ")}
-                              style={{ background: "linear-gradient(0deg, rgba(0,0,0,.25), rgba(0,0,0,.1))" }}
+                              sizes="150px"
+                              className="object-cover"
                             />
                           </button>
                         );
                       })}
-
                     </div>
+
+                    {/* EXTRA SAFE PADDING BELOW (this prevents clipping on macOS / browsers) */}
+                    <div style={{ height: "40px" }} />
                   </div>
                 )}
 
-                {/* Preload neighbors invisibly */}
+                {/* neighbor preloads (hidden) */}
                 <div className="hidden">
                   {neighbors.map(
                     (img) =>

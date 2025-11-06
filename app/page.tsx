@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BRANDS, Brand, PackType } from "@/lib/data";
+import { BRANDS, Brand, PackType, HOMEPAGE_SLOGAN } from "@/lib/data";
 import { BrandCard } from "@/components/BrandCard";
-import { PackChip } from "@/components/PackChip";
 import { ImageTile } from "@/components/ImageTile";
 import { CarouselModal } from "@/components/CarouselModal";
 import { ChevronLeft, Layers } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+
 
 type View = "brands" | "packs" | "images";
 
@@ -72,7 +72,7 @@ export default function Page() {
             </span>
             {brand && <span className="badge">{brand.name}</span>}
             {pack && <span className="badge">{pack.name}</span>}
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </div>
         </div>
       </div>
@@ -80,58 +80,67 @@ export default function Page() {
       {/* Content */}
       <section className="container-pro py-10 md:py-14">
         {view === "brands" && (
-          <div>
-            <div className="mb-8 md:mb-10 text-center">
-              <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
-                Choose your brand
-              </h1>
-              <p className="text-[var(--muted)] mt-2">
-                Tap a card to explore pack formats.
-              </p>
+          <div className="home-split">
+            {/* Left: centered slogan */}
+            <div className="home-slogan">
+              <h1 className="home-slogan-text">{HOMEPAGE_SLOGAN}</h1>
+              <p className="home-slogan-sub">Tap a brand to explore pack formats and images.</p>
             </div>
 
-            {/* Vertical list */}
-            <div className="flex flex-col gap-4 w-full max-w-sm mx-auto pt-4">
-              {BRANDS.map((b) => (
-                <BrandCard
+            {/* Center: vertical divider */}
+            <div className="home-divider" aria-hidden />
+
+            {/* Right: 2×2 black tiles */}
+            <div className="home-tiles">
+              {BRANDS.slice(0, 4).map((b) => (
+                <button
                   key={b.id}
-                  brand={b}
+                  className="brand-tile"
                   onClick={() => { setBrand(b); setView("packs"); }}
-                />
+                  aria-label={`${b.name} – view pack formats`}
+                >
+                  <span className="brand-tile__label">{b.name.toUpperCase()}</span>
+                </button>
               ))}
             </div>
           </div>
         )}
 
         {view === "packs" && brand && (
-          <div className="flex flex-col items-center">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
-                {brand.name}
-              </h2>
-              <p className="text-[var(--muted)] mt-2">
-                Choose your Pack Type
-              </p>
+          <div className="packs-wrap">
+            <div className="packs-head">
+              <h2 className="packs-title">{brand.name}</h2>
             </div>
 
-            {/* Card style list like brand selection */}
-            <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
+            <div className="packs-grid">
+              {/* row 1: the real packs */}
               {brand.packs.map((p) => (
                 <button
                   key={p.id}
+                  className="pack-tile"
                   onClick={() => { setPack(p); setView("images"); }}
-                  className="
-            card p-5 text-left flex items-center justify-between
-            transform-gpu transition hover:-translate-y-0.5 hover:shadow-lg
-          "
+                  aria-label={`Open ${p.name}`}
                 >
-                  <span className="text-lg font-medium">{p.name}</span>
-                  <span className="text-[var(--muted)]">{">"}</span>
+                  <span className="pack-tile__label">{p.name.toUpperCase()}</span>
+                </button>
+              ))}
+
+              {/* row 2: fill to 8 tiles with brand name (to match mock) */}
+              {Array.from({ length: Math.max(0, 8 - brand.packs.length) }).map((_, i) => (
+                <button
+                  key={`brand-fill-${i}`}
+                  className="pack-tile"
+                  onClick={() => { /* no-op fill tile */ }}
+                  aria-hidden
+                  tabIndex={-1}
+                >
+                  <span className="pack-tile__label">{brand.name.toUpperCase()}</span>
                 </button>
               ))}
             </div>
           </div>
         )}
+
 
         {view === "images" && brand && pack && (
           <div>
@@ -142,7 +151,7 @@ export default function Page() {
               <p className="text-[var(--muted)] mt-2">{brand.name}</p>
             </div>
 
-            <div className="grid-images">
+            <div className="grid-images grid-images--dense">
               {pack.images.map((img, idx) => (
                 <ImageTile
                   key={img.id}
