@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { BrandImage } from "@/lib/data";
 
 type Props = {
@@ -9,11 +10,11 @@ type Props = {
 };
 
 export function ImageTile({ img, onClick }: Props) {
+  const [loaded, setLoaded] = useState(false);
   return (
     <div
       className="
         aspect-box relative group
-        transition-opacity
       "
     >
       {/* Click target */}
@@ -25,8 +26,21 @@ export function ImageTile({ img, onClick }: Props) {
       />
 
       {/* Image */}
+      {/* Skeleton */}
+      {!loaded && (
+        <div className="absolute inset-0 rounded-2xl skeleton" />
+      )}
+
+      {/* Image */}
       <div className="aspect-square relative pointer-events-none">
-        <Image src={img.src} alt={img.alt} fill sizes="(min-width: 1280px) 220px, (min-width: 768px) 200px, 45vw" className="object-cover" />
+        <Image
+          src={img.src}
+          alt={img.alt}
+          fill
+          sizes="(min-width:1280px) 220px, (min-width:768px) 200px, 45vw"
+          className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
+          onLoadingComplete={() => setLoaded(true)}
+        />
       </div>
 
       {/* Hover veil */}
