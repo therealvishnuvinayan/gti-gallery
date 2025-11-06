@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BRANDS, Brand, PackType, HOMEPAGE_SLOGAN } from "@/lib/data";
-import { BrandCard } from "@/components/BrandCard";
 import { ImageTile } from "@/components/ImageTile";
 import { CarouselModal } from "@/components/CarouselModal";
-import { ChevronLeft, Layers } from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
+import { ChevronLeft } from "lucide-react";
 
 
 type View = "brands" | "packs" | "images";
@@ -19,6 +17,10 @@ export default function Page() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [themeLogo, setThemeLogo] = useState("/logos/gulbahar-logodark.svg");
+
+  const goBrands = () => { setView("brands"); setBrand(null); setPack(null); };
+  const goPacks = () => { if (brand) { setView("packs"); setPack(null); } };
+
 
   const onBack = () => {
     if (view === "images") { setView("packs"); setPack(null); return; }
@@ -66,14 +68,56 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="badge hidden sm:inline-flex">
-              <Layers className="w-4 h-4" /> {view.toUpperCase()}
-            </span>
-            {brand && <span className="badge">{brand.name}</span>}
-            {pack && <span className="badge">{pack.name}</span>}
-            {/* <ThemeToggle /> */}
-          </div>
+<nav className="crumb-flat hidden sm:flex">
+
+  {/* HOME LEVEL */}
+  {view === "brands" ? (
+    <span className="c-item is-active">
+      <span className="c-home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="c-home-ico">
+          <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            d="M3 11.5L12 3l9 8.5M5 10.5V21h5v-6h4v6h5V10.5" />
+        </svg>
+      </span>
+      <span>Home</span>
+    </span>
+  ) : (
+    <button className="c-item" onClick={goBrands} aria-label="Go to Home">
+      <span className="c-home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="c-home-ico">
+          <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            d="M3 11.5L12 3l9 8.5M5 10.5V21h5v-6h4v6h5V10.5" />
+        </svg>
+      </span>
+      <span>Home</span>
+    </button>
+  )}
+
+  {/* BRAND LEVEL */}
+  {brand && view !== "brands" && (
+    <>
+      <span className="c-sep">›</span>
+      <button
+        className="c-item"
+        onClick={goPacks}
+        title={brand.name}
+      >
+        {brand.name}
+      </button>
+    </>
+  )}
+
+  {/* PACK LEVEL */}
+  {pack && (
+    <>
+      <span className="c-sep">›</span>
+      <span className="c-item is-active">{pack.name}</span>
+    </>
+  )}
+</nav>
+
+
+
         </div>
       </div>
 

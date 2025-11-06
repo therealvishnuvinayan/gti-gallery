@@ -144,7 +144,7 @@ export function CarouselModal({
                         disabled={!hasImages || len < 2}
                         aria-label="Previous image"
                       >
-                        <ChevronLeft className="w-6 h-6" />
+                        <ChevronLeft className="w-10 h-10" />
                       </button>
                       <button
                         className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 rounded-full border border-[var(--border)] bg-[var(--panel)] text-[var(--text)] p-3 shadow-sm transition hover:bg-black/5 disabled:opacity-40"
@@ -152,7 +152,7 @@ export function CarouselModal({
                         disabled={!hasImages || len < 2}
                         aria-label="Next image"
                       >
-                        <ChevronRight className="w-6 h-6" />
+                        <ChevronRight className="w-10 h-10" />
                       </button>
                     </div>
                   </div>
