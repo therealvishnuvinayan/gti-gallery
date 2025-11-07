@@ -1,5 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import "yet-another-react-lightbox/plugins/captions.css";
 
 export const metadata: Metadata = {
   title: "GTI Gallery",
