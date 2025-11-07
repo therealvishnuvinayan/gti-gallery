@@ -2,7 +2,7 @@ export type BrandImage = { id: string; src: string; alt: string };
 export type PackType = { id: string; name: string; images: BrandImage[] };
 export type Brand = { id: string; name: string; logo: string; packs: PackType[] };
 
-export const HOMEPAGE_SLOGAN = "SLOGAN COMES HERE";
+export const HOMEPAGE_SLOGAN = "WELCOME TO GTI PORTFOLIO";
 
 const milanoQueensImgs: BrandImage[] = [
   { id: "milano-queens-1", src: "/images/milano-queens-1.png", alt: "Milano Queens 01" },

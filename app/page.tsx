@@ -115,7 +115,17 @@ export default function Page() {
           <div className="home-split">
             <div className="home-slogan">
               <h1 className="home-slogan-text">{HOMEPAGE_SLOGAN}</h1>
-              <p className="home-slogan-sub">Tap a brand to explore pack formats and images.</p>
+              <p
+                className="
+    mt-4
+    text-lg
+    text-[var(--muted)]
+    max-w-[480px]
+  "
+              >
+                Tap a brand to explore pack formats and images.
+              </p>
+
             </div>
 
             <div className="home-divider" />
