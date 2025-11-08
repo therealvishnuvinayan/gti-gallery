@@ -19,7 +19,7 @@ type Props = {
   onClose: () => void;
 };
 
-export function CarouselModal({
+export default function CarouselModal({
   title,
   images,
   isOpen,
@@ -42,10 +42,9 @@ export function CarouselModal({
       index={startIndex}
       plugins={[Thumbnails, Zoom, Captions]}
       carousel={{ imageFit: "contain", spacing: 0, padding: 0 }}
-      thumbnails={{ height: 100, width: 150, gap: 10 }}
-      captions={{ descriptionTextAlign: "center" }}
+      thumbnails={{ height: 100, width: 150, border: 2, gap: 10, vignette: false }}
+      captions={{ descriptionTextAlign: "center", descriptionMaxLines: 1 }}
+      animation={{ swipe: 250, fade: 200 }}
     />
   );
 }
-
-export default CarouselModal;

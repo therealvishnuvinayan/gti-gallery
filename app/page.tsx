@@ -11,8 +11,8 @@ import {
 } from "@/lib/data";
 import { ImageTile } from "@/components/ImageTile";
 import CarouselModal from "@/components/CarouselModal";
-import FilterDropdown from "@/components/FilterDropdown";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Filter } from "lucide-react";
+import PackFilterOverlay from "@/components/PackFilterOverlay";
 
 type View = "brands" | "images";
 
@@ -20,16 +20,20 @@ export default function Page() {
   const [view, setView] = useState<View>("brands");
   const [brand, setBrand] = useState<Brand | null>(null);
 
+  // carousel state
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [carouselImages, setCarouselImages] = useState<BrandImage[]>([]);
 
+  // full-screen filter page
+  const [showPackFilter, setShowPackFilter] = useState(false);
+
   const [themeLogo, setThemeLogo] = useState("/logos/gulbahar-logodark.svg");
 
   // Merge all images from a brand’s packs
-  const mergedImages = useMemo(() => {
+  const mergedImages: BrandImage[] = useMemo(() => {
     if (!brand) return [];
-    return brand.packs.flatMap(p => p.images);
+    return brand.packs.flatMap((p) => p.images);
   }, [brand]);
 
   const openCarouselAll = (idx: number) => {
@@ -47,6 +51,7 @@ export default function Page() {
   const goBrands = () => {
     setView("brands");
     setBrand(null);
+    setShowPackFilter(false);
   };
 
   useEffect(() => {
@@ -87,6 +92,24 @@ export default function Page() {
               unoptimized
             />
           </div>
+
+          {/* Filter icon only on Images view */}
+          {view === "images" && brand && brand.packs?.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowPackFilter(true)}
+              title="Filter by pack"
+              className="p-1 hover:opacity-70 transition"
+              aria-label="Open pack filter"
+            >
+              {/* black icon, no background */}
+              <Filter
+                className="w-6 h-6"
+                stroke="black"
+                strokeWidth={2.2}
+              />
+            </button>
+          )}
         </div>
       </div>
 
@@ -104,8 +127,7 @@ export default function Page() {
             <div className="home-divider" />
 
             <div className="home-tiles">
-              {BRANDS.map(b => {
-                // ✅ brought back
+              {BRANDS.map((b) => {
                 const brandDisabled =
                   Array.isArray(b.packs) && b.packs.length === 0;
 
@@ -140,22 +162,12 @@ export default function Page() {
         {/* IMAGES */}
         {view === "images" && brand && (
           <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-3xl font-semibold">{brand.name}</h2>
-                <p className="text-[var(--muted)] mt-2">All images</p>
-              </div>
-
-              {/* Filter to open a specific pack directly in the carousel */}
-              {brand.packs?.length > 0 && (
-                <FilterDropdown
-                  packs={brand.packs}
-                  onSelect={p => openCarouselFiltered(p)}
-                />
-              )}
+            <div className="mb-6">
+              <h2 className="text-3xl font-semibold">{brand.name}</h2>
+              <p className="text-[var(--muted)] mt-2">All images</p>
             </div>
 
-            {/* ✅ brought back "images-disabled" + empty state */}
+            {/* Grid with empty state + skeleton handled in ImageTile */}
             <div
               className={`grid-images grid-images--dense ${mergedImages.length === 0 ? "images-disabled" : ""
                 }`}
@@ -183,6 +195,16 @@ export default function Page() {
           </div>
         )}
       </section>
+
+      {/* Full-screen pack filter page */}
+      {showPackFilter && brand && (
+        <PackFilterOverlay
+          brandName={brand.name}
+          packs={brand.packs}
+          onClose={() => setShowPackFilter(false)}
+          onPick={(p) => openCarouselFiltered(p)}
+        />
+      )}
     </main>
   );
 }
