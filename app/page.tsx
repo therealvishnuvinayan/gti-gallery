@@ -146,13 +146,13 @@ export default function Page() {
               <button
                 type="button"
                 onClick={() => setShowPackFilter(true)}
-                title="Filter by pack"
+                title="Filter by packaging"
                 className="p-1 hover:opacity-70 transition"
                 aria-label="Open pack filter"
               >
                 <div className="flex items-center gap-1">
                   <Filter className="w-5 h-5" strokeWidth={2.2} />
-                  <span className="text-sm font-medium hidden sm:inline">Filter by pack</span>
+                  <span className="text-sm font-medium hidden sm:inline">Filter by packaging</span>
                 </div>
               </button>
             )}

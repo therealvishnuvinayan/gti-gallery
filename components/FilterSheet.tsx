@@ -22,7 +22,7 @@ export default function FilterSheet({
             aria-modal="true"
         >
             <div className="container-pro py-6 flex items-center justify-between">
-                <h2 className="text-2xl font-semibold">Filter by pack</h2>
+                <h2 className="text-2xl font-semibold">Filter by packaging</h2>
                 <button className="btn btn-ghost" onClick={onClose} aria-label="Close">
                     <X className="w-5 h-5" />
                     <span className="hidden sm:inline">Close</span>

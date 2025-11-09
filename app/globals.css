@@ -627,12 +627,7 @@ body {
   position: relative;
 }
 
-.hero-gradient{
-  background: linear-gradient(92deg, #3b82f6 0%, #22c55e 45%, #f59e0b 85%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+/* bal */
 
 .hero-underline{
   position:absolute;
@@ -677,4 +672,8 @@ body {
     align-items: start;
   }
   .hero{ padding-block: 10px; }
+}
+
+.hero-plain {
+  color: var(--text);
 }
