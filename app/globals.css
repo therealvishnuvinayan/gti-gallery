@@ -625,6 +625,7 @@ body {
   /* Big but responsive */
   font-size: clamp(2.4rem, 6.2vw, 4.25rem);
   position: relative;
+  word-spacing: 0.15em;
 }
 
 /* bal */

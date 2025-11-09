@@ -1,4 +1,3 @@
-// app/page.tsx (or wherever this file lives)
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,7 +6,6 @@ import {
   BRANDS,
   Brand,
   PackType,
-  HOMEPAGE_SLOGAN,
   BrandImage,
 } from "@/lib/data";
 import { ImageTile } from "@/components/ImageTile";
@@ -94,7 +92,15 @@ export default function Page() {
       {/* Global AppBar: logo only */}
       <div className="appbar">
         <div className="container-pro h-16 flex items-center justify-between">
-          <div className="pl-1">
+          <div
+            className="pl-1 cursor-pointer"
+            onClick={() => {
+              setView("brands");
+              setBrand(null);
+              setCurrentPack(null);
+              setShowPackFilter(false);
+            }}
+          >
             <Image
               src={themeLogo}
               alt="Gulbahar"

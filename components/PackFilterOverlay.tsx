@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { X } from "lucide-react";
 import type { PackType } from "@/lib/data";
@@ -18,9 +19,9 @@ export default function PackFilterOverlay({
   onPick,
   onClose,
 }: Props) {
+  const router = useRouter();
   const [themeLogo, setThemeLogo] = useState("/logos/gulbahar-logodark.svg");
 
-  // keep logo synced with current theme
   useEffect(() => {
     const updateLogo = () => {
       const theme = document.documentElement.getAttribute("data-theme");
@@ -37,24 +38,32 @@ export default function PackFilterOverlay({
   }, []);
 
   return (
-    // one scroll container only: the inner "content" wrapper below
     <div className="fixed inset-0 z-[70] bg-white dark:bg-[var(--panel)] flex flex-col overflow-hidden">
-      {/* Top logo bar (not scrollable) */}
+      {/* Top bar */}
       <div className="appbar">
         <div className="container-pro h-16 flex items-center">
-          <Image
-            src={themeLogo}
-            alt="Gulbahar"
-            width={120}
-            height={32}
-            className="h-8 w-auto md:h-10"
-            priority
-            unoptimized
-          />
+          <button
+            onClick={() => {
+              onClose();
+              router.push("/");
+            }}
+            aria-label="Go Home"
+            className="cursor-pointer"
+          >
+            <Image
+              src={themeLogo}
+              alt="Gulbahar"
+              width={120}
+              height={32}
+              className="h-8 w-auto md:h-10"
+              priority
+              unoptimized
+            />
+          </button>
         </div>
       </div>
 
-      {/* Header row under the appbar (not scrollable) */}
+      {/* Header */}
       <div className="border-b border-[var(--border)]">
         <div className="container-pro h-14 flex items-center justify-between">
           <div className="text-base md:text-lg font-semibold">
@@ -73,25 +82,21 @@ export default function PackFilterOverlay({
         </div>
       </div>
 
-      {/* Content area: the ONLY scrollable region */}
+      {/* Scroll content */}
       <div className="grow overflow-auto">
-        {/* Center the grid with a max width */}
         <div className="mx-auto w-full max-w-[1200px] px-6 py-8">
           {packs.length === 0 ? (
             <div className="text-[var(--muted)]">No packs available.</div>
           ) : (
-            <div
-              className="
-                grid gap-6 sm:gap-7 lg:gap-8
-                grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
-                justify-items-center
-              "
-            >
+            <div className="
+              grid gap-6 sm:gap-7 lg:gap-8
+              grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
+              justify-items-center
+            ">
               {packs.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => onPick(p)}
-                  aria-label={`Open ${p.name}`}
                   className="
                     w-full max-w-[260px] aspect-square
                     bg-[#111] border border-[#111]
