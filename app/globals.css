@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'react-loading-skeleton/dist/skeleton.css';
-
-
 /* ─────────────────────────────────────────────
    Theme Tokens
 ───────────────────────────────────────────────*/
