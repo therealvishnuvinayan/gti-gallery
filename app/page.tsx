@@ -1,3 +1,4 @@
+// app/page.tsx (or wherever this file lives)
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -12,7 +13,7 @@ import {
 import { ImageTile } from "@/components/ImageTile";
 import CarouselModal from "@/components/CarouselModal";
 import PackFilterOverlay from "@/components/PackFilterOverlay";
-import { ChevronLeft, Filter } from "lucide-react";
+import { ChevronLeft, Filter, Sparkles } from "lucide-react";
 
 type View = "brands" | "images" | "packImages";
 
@@ -112,7 +113,10 @@ export default function Page() {
         {/* Inline page header with Back + Title + Filter (when applicable) */}
         {view !== "brands" && (
           <div className="mb-6 flex items-center justify-between gap-4">
-            <button className="btn btn-ghost" onClick={view === "packImages" ? () => setView("images") : goBrands}>
+            <button
+              className="btn btn-ghost"
+              onClick={view === "packImages" ? () => setView("images") : goBrands}
+            >
               <ChevronLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Back</span>
             </button>
@@ -120,7 +124,9 @@ export default function Page() {
             <div className="flex-1 min-w-0 px-2">
               {view === "images" && brand && (
                 <>
-                  <h2 className="text-2xl md:text-3xl font-semibold truncate">{brand.name}</h2>
+                  <h2 className="text-2xl md:text-3xl font-semibold truncate">
+                    {brand.name}
+                  </h2>
                   <p className="text-[var(--muted)] mt-1">All images</p>
                 </>
               )}
@@ -143,7 +149,10 @@ export default function Page() {
                 className="p-1 hover:opacity-70 transition"
                 aria-label="Open pack filter"
               >
-                <Filter className="w-6 h-6" color="black" strokeWidth={2.2} />
+                <div className="flex items-center gap-1">
+                  <Filter className="w-5 h-5" strokeWidth={2.2} />
+                  <span className="text-sm font-medium hidden sm:inline">Filter by pack</span>
+                </div>
               </button>
             )}
           </div>
@@ -263,6 +272,25 @@ export default function Page() {
           onPick={(p) => goPackImages(p)}
         />
       )}
+
+      <div
+        className="
+    fixed bottom-4 right-4 z-50
+    inline-flex items-center gap-2
+    rounded-xl px-3.5 py-2
+    text-sm font-semibold
+    shadow-md ring-1 ring-[var(--border)]
+    bg-black/80 text-white
+    backdrop-blur
+    transition
+    dark:bg-white/10 dark:text-[var(--text)]
+  "
+        aria-hidden="true"
+      >
+        <Sparkles className="h-4 w-4" />
+        <span>Powered by Zyypher</span>
+      </div>
+
     </main>
   );
 }
