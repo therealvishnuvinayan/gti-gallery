@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/captions.css";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export const metadata: Metadata = {
   title: "GTI Gallery",
