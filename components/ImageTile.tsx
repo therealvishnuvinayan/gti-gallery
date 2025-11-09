@@ -11,14 +11,14 @@ type Props = {
 
 /**
  * Image tile with CSS skeleton shimmer until the image finishes loading.
- * Fixed aspect to keep grid rows aligned with real image height.
+ * Fixed square aspect so rows stay aligned while images load.
  */
 export function ImageTile({ img, onClick }: Props) {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <div className="aspect-box relative group">
-      {/* Click target */}
+      {/* Whole-tile clickable */}
       <button
         type="button"
         onClick={onClick}
@@ -26,18 +26,19 @@ export function ImageTile({ img, onClick }: Props) {
         className="absolute inset-0 z-10"
       />
 
-      {/* Skeleton while loading */}
+      {/* Skeleton */}
       {!loaded && <div className="absolute inset-0 rounded-2xl skeleton" />}
 
-      {/* Image (cover to fill tile; change to object-contain if needed) */}
+      {/* Image */}
       <div className="relative pointer-events-none" style={{ aspectRatio: "1 / 1" }}>
         <Image
           src={img.src}
           alt={img.alt}
           fill
           sizes="(min-width:1280px) 220px, (min-width:768px) 200px, 45vw"
-          className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"
-            }`}
+          className={`object-cover transition-opacity duration-300 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
           onLoadingComplete={() => setLoaded(true)}
         />
       </div>

@@ -11,46 +11,64 @@ import {
 } from "@/lib/data";
 import { ImageTile } from "@/components/ImageTile";
 import CarouselModal from "@/components/CarouselModal";
-import { ChevronLeft, Filter } from "lucide-react";
 import PackFilterOverlay from "@/components/PackFilterOverlay";
+import { ChevronLeft, Filter } from "lucide-react";
 
-type View = "brands" | "images";
+type View = "brands" | "images" | "packImages";
 
 export default function Page() {
   const [view, setView] = useState<View>("brands");
   const [brand, setBrand] = useState<Brand | null>(null);
+  const [currentPack, setCurrentPack] = useState<PackType | null>(null);
 
-  // carousel state
+  // carousel
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [carouselImages, setCarouselImages] = useState<BrandImage[]>([]);
 
-  // full-screen filter page
+  // full-screen filter
   const [showPackFilter, setShowPackFilter] = useState(false);
 
   const [themeLogo, setThemeLogo] = useState("/logos/gulbahar-logodark.svg");
 
-  // Merge all images from a brand’s packs
+  // merge all images of a brand
   const mergedImages: BrandImage[] = useMemo(() => {
     if (!brand) return [];
     return brand.packs.flatMap((p) => p.images);
   }, [brand]);
 
+  // open carousel for ALL brand images
   const openCarouselAll = (idx: number) => {
     setCarouselImages(mergedImages);
     setSelectedIndex(idx);
     setIsOpen(true);
   };
 
-  const openCarouselFiltered = (pack: PackType) => {
-    setCarouselImages(pack.images);
-    setSelectedIndex(0);
+  // open carousel for CURRENT PACK images
+  const openCarouselPack = (idx: number) => {
+    if (!currentPack) return;
+    setCarouselImages(currentPack.images);
+    setSelectedIndex(idx);
     setIsOpen(true);
   };
 
   const goBrands = () => {
     setView("brands");
     setBrand(null);
+    setCurrentPack(null);
+    setShowPackFilter(false);
+  };
+
+  const goImages = (nextBrand: Brand) => {
+    setBrand(nextBrand);
+    setView("images");
+    setCurrentPack(null);
+    setShowPackFilter(false);
+  };
+
+  const goPackImages = (p: PackType) => {
+    setCurrentPack(p);
+    setView("packImages");
     setShowPackFilter(false);
   };
 
@@ -71,17 +89,10 @@ export default function Page() {
 
   return (
     <main className="min-h-screen">
-      {/* Appbar */}
+      {/* Global AppBar: logo only */}
       <div className="appbar">
         <div className="container-pro h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {view !== "brands" && (
-              <button className="btn btn-ghost" onClick={goBrands}>
-                <ChevronLeft className="w-5 h-5" />
-                <span className="hidden sm:inline">Back</span>
-              </button>
-            )}
-
+          <div className="pl-1">
             <Image
               src={themeLogo}
               alt="Gulbahar"
@@ -92,29 +103,53 @@ export default function Page() {
               unoptimized
             />
           </div>
-
-          {/* Filter icon only on Images view */}
-          {view === "images" && brand && brand.packs?.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setShowPackFilter(true)}
-              title="Filter by pack"
-              className="p-1 hover:opacity-70 transition"
-              aria-label="Open pack filter"
-            >
-              {/* black icon, no background */}
-              <Filter
-                className="w-6 h-6"
-                stroke="black"
-                strokeWidth={2.2}
-              />
-            </button>
-          )}
+          {/* intentionally empty right side */}
+          <div />
         </div>
       </div>
 
-      <section className="container-pro py-10 md:py-14">
-        {/* BRANDS */}
+      <section className="container-pro py-8 md:py-10">
+        {/* Inline page header with Back + Title + Filter (when applicable) */}
+        {view !== "brands" && (
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <button className="btn btn-ghost" onClick={view === "packImages" ? () => setView("images") : goBrands}>
+              <ChevronLeft className="w-5 h-5" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+
+            <div className="flex-1 min-w-0 px-2">
+              {view === "images" && brand && (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-semibold truncate">{brand.name}</h2>
+                  <p className="text-[var(--muted)] mt-1">All images</p>
+                </>
+              )}
+              {view === "packImages" && brand && currentPack && (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-semibold truncate">
+                    {brand.name} — {currentPack.name}
+                  </h2>
+                  <p className="text-[var(--muted)] mt-1">Pack images</p>
+                </>
+              )}
+            </div>
+
+            {/* Filter only on images/packImages and only when packs exist */}
+            {brand && brand.packs?.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowPackFilter(true)}
+                title="Filter by pack"
+                className="p-1 hover:opacity-70 transition"
+                aria-label="Open pack filter"
+              >
+                <Filter className="w-6 h-6" color="black" strokeWidth={2.2} />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* BRANDS (home) */}
         {view === "brands" && (
           <div className="home-split">
             <div className="home-slogan">
@@ -138,8 +173,7 @@ export default function Page() {
                       }`}
                     onClick={() => {
                       if (brandDisabled) return;
-                      setBrand(b);
-                      setView("images");
+                      goImages(b);
                     }}
                     disabled={brandDisabled}
                     aria-disabled={brandDisabled}
@@ -159,15 +193,9 @@ export default function Page() {
           </div>
         )}
 
-        {/* IMAGES */}
+        {/* BRAND IMAGES (all packs merged) */}
         {view === "images" && brand && (
           <div>
-            <div className="mb-6">
-              <h2 className="text-3xl font-semibold">{brand.name}</h2>
-              <p className="text-[var(--muted)] mt-2">All images</p>
-            </div>
-
-            {/* Grid with empty state + skeleton handled in ImageTile */}
             <div
               className={`grid-images grid-images--dense ${mergedImages.length === 0 ? "images-disabled" : ""
                 }`}
@@ -186,7 +214,37 @@ export default function Page() {
             </div>
 
             <CarouselModal
-              title={`${brand.name} Images`}
+              title={`${brand.name} — All`}
+              images={carouselImages}
+              isOpen={isOpen}
+              startIndex={selectedIndex}
+              onClose={() => setIsOpen(false)}
+            />
+          </div>
+        )}
+
+        {/* PACK IMAGES (only selected pack) */}
+        {view === "packImages" && brand && currentPack && (
+          <div>
+            <div
+              className={`grid-images grid-images--dense ${currentPack.images.length === 0 ? "images-disabled" : ""
+                }`}
+            >
+              {currentPack.images.length === 0 ? (
+                <div className="empty-image-box">NO IMAGES</div>
+              ) : (
+                currentPack.images.map((img, idx) => (
+                  <ImageTile
+                    key={img.id}
+                    img={img}
+                    onClick={() => openCarouselPack(idx)}
+                  />
+                ))
+              )}
+            </div>
+
+            <CarouselModal
+              title={`${brand.name} — ${currentPack.name}`}
               images={carouselImages}
               isOpen={isOpen}
               startIndex={selectedIndex}
@@ -196,13 +254,13 @@ export default function Page() {
         )}
       </section>
 
-      {/* Full-screen pack filter page */}
+      {/* Full-screen pack selector */}
       {showPackFilter && brand && (
         <PackFilterOverlay
           brandName={brand.name}
           packs={brand.packs}
           onClose={() => setShowPackFilter(false)}
-          onPick={(p) => openCarouselFiltered(p)}
+          onPick={(p) => goPackImages(p)}
         />
       )}
     </main>
