@@ -14,6 +14,7 @@ import { ImageTile } from "@/components/ImageTile";
 import CarouselModal from "@/components/CarouselModal";
 import PackFilterOverlay from "@/components/PackFilterOverlay";
 import { ChevronLeft, Filter, Sparkles } from "lucide-react";
+import { HeroBlock } from "@/components/HeroBlock";
 
 type View = "brands" | "images" | "packImages";
 
@@ -161,46 +162,31 @@ export default function Page() {
         {/* BRANDS (home) */}
         {view === "brands" && (
           <div className="home-split">
-            <div className="home-slogan">
-              <h1 className="home-slogan-text">{HOMEPAGE_SLOGAN}</h1>
-              <p className="home-slogan-sub mt-4 text-lg max-w-[480px]">
-                Tap a brand to view all images instantly.
-              </p>
-            </div>
+            {/* NEW HERO */}
+            <HeroBlock />
 
             <div className="home-divider" />
 
             <div className="home-tiles">
               {BRANDS.map((b) => {
-                const brandDisabled =
-                  Array.isArray(b.packs) && b.packs.length === 0;
-
+                const brandDisabled = Array.isArray(b.packs) && b.packs.length === 0;
                 return (
                   <button
                     key={b.id}
-                    className={`brand-tile ${brandDisabled ? "opacity-45 pointer-events-none" : ""
-                      }`}
-                    onClick={() => {
-                      if (brandDisabled) return;
-                      goImages(b);
-                    }}
+                    className={`brand-tile ${brandDisabled ? "opacity-45 pointer-events-none" : ""}`}
+                    onClick={() => { if (!brandDisabled) goImages(b); }}
                     disabled={brandDisabled}
                     aria-disabled={brandDisabled}
-                    aria-label={
-                      brandDisabled
-                        ? `${b.name} has no packs`
-                        : `Open ${b.name} images`
-                    }
+                    aria-label={brandDisabled ? `${b.name} has no packs` : `Open ${b.name} images`}
                   >
-                    <span className="brand-tile__label">
-                      {b.name.toUpperCase()}
-                    </span>
+                    <span className="brand-tile__label">{b.name.toUpperCase()}</span>
                   </button>
                 );
               })}
             </div>
           </div>
         )}
+
 
         {/* BRAND IMAGES (all packs merged) */}
         {view === "images" && brand && (
