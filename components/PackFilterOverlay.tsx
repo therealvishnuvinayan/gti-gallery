@@ -8,16 +8,10 @@ import type { PackType } from "@/lib/data";
 type Props = {
   brandName: string;
   packs: PackType[];
-  onPick: (pack: PackType) => void; // parent decides whether to open a page/carousel
+  onPick: (pack: PackType) => void;
   onClose: () => void;
 };
 
-/**
- * Full-screen overlay for choosing a Pack within a Brand.
- * - Top appbar shows the GTI logo only (same height as site appbar).
- * - Below the appbar, a header row shows "Filter — {brand}" on the left and a Close button on the right.
- * - Grid of black square pack tiles follows.
- */
 export default function PackFilterOverlay({
   brandName,
   packs,
@@ -26,7 +20,7 @@ export default function PackFilterOverlay({
 }: Props) {
   const [themeLogo, setThemeLogo] = useState("/logos/gulbahar-logodark.svg");
 
-  // Keep logo in sync with current theme (light/dark) like the rest of the app
+  // keep logo synced with current theme
   useEffect(() => {
     const updateLogo = () => {
       const theme = document.documentElement.getAttribute("data-theme");
@@ -37,14 +31,15 @@ export default function PackFilterOverlay({
       );
     };
     updateLogo();
-    const observer = new MutationObserver(updateLogo);
-    observer.observe(document.documentElement, { attributes: true });
-    return () => observer.disconnect();
+    const obs = new MutationObserver(updateLogo);
+    obs.observe(document.documentElement, { attributes: true });
+    return () => obs.disconnect();
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[70] bg-white dark:bg-[var(--panel)] flex flex-col">
-      {/* ── Top appbar with ONLY the GTI logo (no text/close here) ───────────── */}
+    // one scroll container only: the inner "content" wrapper below
+    <div className="fixed inset-0 z-[70] bg-white dark:bg-[var(--panel)] flex flex-col overflow-hidden">
+      {/* Top logo bar (not scrollable) */}
       <div className="appbar">
         <div className="container-pro h-16 flex items-center">
           <Image
@@ -59,7 +54,7 @@ export default function PackFilterOverlay({
         </div>
       </div>
 
-      {/* ── Header row BELOW the appbar ────────────────────────────────────── */}
+      {/* Header row under the appbar (not scrollable) */}
       <div className="border-b border-[var(--border)]">
         <div className="container-pro h-14 flex items-center justify-between">
           <div className="text-base md:text-lg font-semibold">
@@ -78,24 +73,41 @@ export default function PackFilterOverlay({
         </div>
       </div>
 
-      {/* ── Content: pack tiles ────────────────────────────────────────────── */}
-      <div className="container-pro py-8 grow">
-        {packs.length === 0 ? (
-          <div className="text-[var(--muted)]">No packs available.</div>
-        ) : (
-          <div className="packs-grid">
-            {packs.map((p) => (
-              <button
-                key={p.id}
-                className="pack-tile"
-                onClick={() => onPick(p)}
-                aria-label={`Open ${p.name}`}
-              >
-                <span className="pack-tile__label">{p.name.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
-        )}
+      {/* Content area: the ONLY scrollable region */}
+      <div className="grow overflow-auto">
+        {/* Center the grid with a max width */}
+        <div className="mx-auto w-full max-w-[1200px] px-6 py-8">
+          {packs.length === 0 ? (
+            <div className="text-[var(--muted)]">No packs available.</div>
+          ) : (
+            <div
+              className="
+                grid gap-6 sm:gap-7 lg:gap-8
+                grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
+                justify-items-center
+              "
+            >
+              {packs.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => onPick(p)}
+                  aria-label={`Open ${p.name}`}
+                  className="
+                    w-full max-w-[260px] aspect-square
+                    bg-[#111] border border-[#111]
+                    grid place-items-center
+                    transition-transform duration-150
+                    hover:-translate-y-0.5
+                  "
+                >
+                  <span className="text-white font-bold tracking-wider text-sm sm:text-base text-center">
+                    {p.name.toUpperCase()}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
